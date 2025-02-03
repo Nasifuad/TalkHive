@@ -8,13 +8,10 @@ const Navbar = () => {
     "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
 
   const navigate = useNavigate();
-  const { authUser: user, logout } = useUserStore();
-  console.log(
-    "user data from authUser in the navbar",
-    user?.data?.data?.avatar
-  );
-  const [userName] = useState(user?.data?.data?.username || "Guest");
-  const [avatar] = useState(user?.data?.data?.avatar || img);
+  const { authUser, logout } = useUserStore();
+  console.log(authUser);
+  const [userName] = useState(authUser?.data?.data?.username || "Guest");
+  const [avatar] = useState(authUser?.data?.data?.avatar || img);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuItems = [
     {
@@ -87,7 +84,7 @@ const Navbar = () => {
           ))}
         </ul>
         {/* If any user is logged in then show logout or else show login and signup */}
-        {user ? (
+        {authUser ? (
           <div className="flex items-center gap-2 ml-2">
             <div className="flex items-center gap-2">
               <div className="avatar online">
@@ -187,7 +184,7 @@ const Navbar = () => {
                   </NavLink>
                 </motion.li>
               ))}
-              {user ? (
+              {authUser ? (
                 <motion.button
                   className="text-red-400"
                   whileHover={{ scale: 1.1 }}

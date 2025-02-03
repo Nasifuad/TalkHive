@@ -103,7 +103,15 @@ const checkUser = AsyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(400, "User does not exist");
   }
-  return res.status(200).json(new ApiResponse(200, "User logged in", user));
+  return res.status(200).json({
+    success: true,
+    message: "User found",
+    userInfo: {
+      username: user.username,
+      email: user.email,
+      avatar: user.avatar,
+    },
+  });
 });
 
 const updateAvatar = AsyncHandler(async (req, res) => {

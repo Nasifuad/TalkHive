@@ -13,7 +13,8 @@ const useUserStore = create((set) => {
     checkAuth: async () => {
       try {
         const res = await axios.get("/api/v1/user/check-user");
-        set({ authUser: res });
+        console.log("🚀 :", res);
+        set({ authUser: res.data.userInfo });
       } catch (error) {
         console.log("errrrr", error.message);
         set({ authUser: null });
