@@ -72,12 +72,14 @@ const login = AsyncHandler(async (req, res) => {
     $or: [{ email }, { username }],
   });
   if (!user) {
-    throw new ApiError(400, "User does not exist");
+    // throw new ApiError(400, "User does not exist");
+    res.status(400).json({ success: false, message: "Invalid Credintials" });
   }
   const isMatch = await user.checkPassword(password.toString());
   console.log("isMatch", isMatch);
   if (!isMatch) {
-    throw new ApiError(400, "Incorrect password");
+    // throw new ApiError(400, "Incorrect password");
+    res.status(400).json({ success: false, message: "Invalid Credintials" });
   }
   const token = generateAccessToken(user._id);
   res.cookie("token", token, {
@@ -95,17 +97,14 @@ const logout = AsyncHandler(async (req, res) => {
   res.clearCookie("token");
   return res.status(200).json(new ApiResponse(200, "User logged out"));
 });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+const checkUser = AsyncHandler(async (req, res) => {
+  const user = await User.findById(req.user);
+  if (!user) {
+    throw new ApiError(400, "User does not exist");
+  }
+  return res.status(200).json(new ApiResponse(200, "User logged in", user));
+});
 
 const updateAvatar = AsyncHandler(async (req, res) => {
   try {
@@ -136,4 +135,4 @@ const updateAvatar = AsyncHandler(async (req, res) => {
   }
 });
 
-export { register, login, logout, updateAvatar };
+export { register, login, logout, updateAvatar, checkUser };

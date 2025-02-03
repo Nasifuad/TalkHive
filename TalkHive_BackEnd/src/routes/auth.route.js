@@ -6,17 +6,18 @@ import {
   login,
   logout,
   updateAvatar,
+  checkUser,
 } from "../controllers/auth.controller.js";
 
 const router = Router();
 
 router.route("/signup").post(upload.single("avatar"), register);
 router.route("/login").post(login);
-router.route("/logout").post(authVerify, logout);
+router.route("/logout").get(authVerify, logout);
 router
   .route("/update-avatar")
   .post(authVerify, upload.single("avatar"), updateAvatar);
-
+router.route("/check-user").get(authVerify, checkUser);
 //test route
 
 router.route("/test").get(authVerify, (req, res) => {

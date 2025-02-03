@@ -1,1 +1,52 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+.crt-effect {
+  background: linear-gradient(
+      to bottom,
+      rgba(0, 255, 0, 0.03) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    ),
+    radial-gradient(circle, transparent 60%, rgba(0, 255, 0, 0.1) 100%);
+  background-size: 100% 4px, 100% 100%;
+  animation: crt-flicker 0.15s infinite;
+  box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+@keyframes crt-flicker {
+  0% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+.marquee-container {
+  width: 100%;
+  white-space: nowrap;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.crt-effect::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 255, 0, 0.1) 0%,
+    rgba(0, 255, 0, 0) 3%
+  );
+  animation: scanline 6s linear infinite;
+  pointer-events: none;
+}
