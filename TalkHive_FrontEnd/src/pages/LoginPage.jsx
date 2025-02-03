@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const { isLoggingIn, checkLogin, checkAuth } = useUserStore();
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     console.log("This this working");
     if (username.length == 0 && password.length == 0) {
@@ -29,7 +29,7 @@ const LoginPage = () => {
       return;
     }
 
-    const res = checkLogin(username, password);
+    const res = await checkLogin(username, password);
     if (res) {
       checkAuth();
       navigate("/");
