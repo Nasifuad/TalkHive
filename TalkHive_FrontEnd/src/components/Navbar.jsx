@@ -6,9 +6,15 @@ import useUserStore from "../store/user.store";
 const Navbar = () => {
   const img =
     "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp";
+
   const navigate = useNavigate();
-  // const [user, setuser] = useState(false);
   const { authUser: user, logout } = useUserStore();
+  console.log(
+    "user data from authUser in the navbar",
+    user?.data?.data?.avatar
+  );
+  const [userName] = useState(user?.data?.data?.username || "Guest");
+  const [avatar] = useState(user?.data?.data?.avatar || img);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuItems = [
     {
@@ -86,10 +92,10 @@ const Navbar = () => {
             <div className="flex items-center gap-2">
               <div className="avatar online">
                 <div className="w-12 xl:w-16 rounded-full">
-                  <img src={img} />
+                  <img src={avatar} />
                 </div>
               </div>
-              <p className="text-cyan-300 text-sm text-nowrap">Nasif Fuad</p>
+              <p className="text-cyan-300 text-sm text-nowrap">{userName}</p>
             </div>
 
             <motion.button

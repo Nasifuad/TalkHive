@@ -32,7 +32,7 @@ const CosmicBackground = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-black overflow-hidden"
+      className="fixed -z-50 inset-0 bg-black overflow-hidden"
       style={gridBackground}
     >
       {/* Floating Stars */}

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { NavLink } from "react-router-dom";
 
 const RetroChatHomePage = () => {
   const title = "Welcome to TalkHive".split(" ");
@@ -84,7 +85,9 @@ const RetroChatHomePage = () => {
             transition={{ type: "spring", stiffness: 300 }}
             onClick={() => toast.success("Session started! hehe")}
           >
-            <span className="relative z-10">START SESSION</span>
+            <NavLink className="relative z-10" to="chat-room">
+              START SESSION
+            </NavLink>
             <div className="absolute inset-0 bg-green-400 opacity-0 group-hover:opacity-10 transition-opacity" />
           </motion.button>
         </div>

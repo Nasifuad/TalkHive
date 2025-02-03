@@ -12,7 +12,7 @@ const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const { isLoggingIn, checkLogin } = useUserStore();
+  const { isLoggingIn, checkLogin, checkAuth } = useUserStore();
   const handleLogin = (e) => {
     e.preventDefault();
     console.log("This this working");
@@ -31,6 +31,7 @@ const LoginPage = () => {
 
     const res = checkLogin(username, password);
     if (res) {
+      checkAuth();
       navigate("/");
     }
   };

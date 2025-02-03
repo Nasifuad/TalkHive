@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 const Layout = () => {
   return (
-    <div className="scroll-smooth">
+    <div className="scroll-smooth overflow-hidden">
       <CosmicBackground />
       <Navbar />
       <Outlet />

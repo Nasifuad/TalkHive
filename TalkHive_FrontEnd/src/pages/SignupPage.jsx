@@ -23,8 +23,11 @@ const SignUpPage = () => {
     }
     setAvatar(event.target.files[0]);
   };
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+    if (!validateInfo()) {
+      return;
+    }
     const formData = new FormData();
     formData.append("username", username);
     formData.append("email", email);
@@ -36,11 +39,10 @@ const SignUpPage = () => {
     setPassword("");
     setConfirmPassword("");
     setFileSelected(false);
-    if (validateInfo()) {
-      const res = checkSignup(formData);
-      if (res) {
-        navigate("/");
-      }
+
+    const res = await checkSignup(formData);
+    if (res) {
+      navigate("/");
     }
   };
   const validateInfo = () => {

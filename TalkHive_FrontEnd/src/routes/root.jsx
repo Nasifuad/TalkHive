@@ -11,17 +11,21 @@ import ContactPage from "../pages/ContactPage";
 import LoginPage from "../pages/LoginPage";
 import SignUpPage from "../pages/SignupPage";
 import ErrorPage from "../pages/ErrorPage";
+import ChatRoom from "../pages/ChatRoom";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
-      <Route index element={<RetroChatHomePage />} />
-      <Route path="about" element={<AboutPage />} />
-      <Route path="features" element={<FeaturesPage />} />
-      <Route path="contact" element={<ContactPage />} />
-      <Route path="login" element={<LoginPage />} />
-      <Route path="signup" element={<SignUpPage />} />
-      <Route path="*" element={<ErrorPage />} />
+    <Route path="/">
+      <Route path="/" element={<Layout />}>
+        <Route index element={<RetroChatHomePage />} />
+        <Route path="about" element={<AboutPage />} />
+        <Route path="features" element={<FeaturesPage />} />
+        <Route path="contact" element={<ContactPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="signup" element={<SignUpPage />} />
+        <Route path="*" element={<ErrorPage />} />
+      </Route>
+      <Route path="/chat-room" element={<ChatRoom />}></Route>
     </Route>
   )
 );
