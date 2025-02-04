@@ -10,7 +10,9 @@ import {
 } from "../controllers/auth.controller.js";
 
 const router = Router();
-
+router.route("/").get((req, res) => {
+  res.send("Auth route");
+});
 router.route("/signup").post(upload.single("avatar"), register);
 router.route("/login").post(login);
 router.route("/logout").get(authVerify, logout);
