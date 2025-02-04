@@ -83,7 +83,6 @@ const RetroChatHomePage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
-            onClick={() => toast.success("Session started! hehe")}
           >
             <NavLink className="relative z-10" to="chat-room">
               START SESSION
