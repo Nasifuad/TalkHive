@@ -15,7 +15,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "https://talk-hive-live.vercel.app/",
+    origin: "https://talk-hive-live.vercel.app",
     credentials: true,
   })
 );

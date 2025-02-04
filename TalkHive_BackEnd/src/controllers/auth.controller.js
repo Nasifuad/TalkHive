@@ -38,7 +38,7 @@ const register = AsyncHandler(async (req, res) => {
       throw new ApiError(400, "User already exist");
     }
 
-    const avatarLocalPath = req.file.path;
+    const avatarLocalPath = req.file.buffer;
     console.log(avatarLocalPath);
     const avatarFile = await uploadToCloudinary(avatarLocalPath);
     console.log("avatarFile", avatarFile);
