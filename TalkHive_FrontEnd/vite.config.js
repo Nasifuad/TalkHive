@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://talkhive-backend.onrender.com",
+        target: "https://talk-hive-backend.vercel.app",
         changeOrigin: true,
       },
     },
