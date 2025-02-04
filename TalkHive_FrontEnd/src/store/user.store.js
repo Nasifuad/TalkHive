@@ -12,7 +12,9 @@ const useUserStore = create((set) => {
     setUser: (user) => set({ user }),
     checkAuth: async () => {
       try {
-        const res = await axios.get("/api/v1/user/check-user");
+        const res = await axios.get(
+          "https://talk-hive-backend.vercel.app//api/v1/user/check-user"
+        );
         console.log("🚀 :", res);
         set({ authUser: res.data.userInfo });
       } catch (error) {
@@ -27,10 +29,13 @@ const useUserStore = create((set) => {
         set({ isLoggingIn: true });
         //set a promise for 1 sec delay
 
-        const res = await axios.post("/api/v1/user/login", {
-          username,
-          password,
-        });
+        const res = await axios.post(
+          "https://talk-hive-backend.vercel.app//api/v1/user/login",
+          {
+            username,
+            password,
+          }
+        );
         toast.success("Login successful");
         set({ authUser: res.data });
         return true;
@@ -47,11 +52,15 @@ const useUserStore = create((set) => {
     checkSignup: async (formData) => {
       try {
         set({ isSigninUp: true });
-        const res = await axios.post("/api/v1/user/signup", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        const res = await axios.post(
+          "https://talk-hive-backend.vercel.app/api/v1/user/signup",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         toast.success("Signup successful");
         set({ authUser: res.data });
         return true;
@@ -66,7 +75,9 @@ const useUserStore = create((set) => {
     logout: async () => {
       try {
         console.log("logging out");
-        const res = await axios.get("/api/v1/user/logout");
+        const res = await axios.get(
+          "https://talk-hive-backend.vercel.app//api/v1/user/logout"
+        );
         console.log(res);
         toast.success("Logout successful");
         set({ authUser: null });

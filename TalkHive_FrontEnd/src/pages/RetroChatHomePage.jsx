@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
 import { NavLink } from "react-router-dom";
 
 const RetroChatHomePage = () => {
