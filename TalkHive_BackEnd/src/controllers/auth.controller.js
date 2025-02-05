@@ -56,6 +56,7 @@ const register = AsyncHandler(async (req, res) => {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
         secure: true,
+        sameSite: none,
       });
       return res.status(201).json(new ApiResponse(201, "User created", user));
     }
@@ -86,6 +87,7 @@ const login = AsyncHandler(async (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
     secure: true,
+    sameSite: none,
   });
   return res.status(200).json(new ApiResponse(200, "User logged in", user));
 });
