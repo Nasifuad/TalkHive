@@ -1,67 +1,103 @@
-// Aside.jsx
 import { ArrowLeftCircle, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import useUserStore from "../store/user.store";
+import { useEffect } from "react";
 
 const Aside = () => {
   const navigate = useNavigate();
-  const users = Array(10).fill({
-    name: "Jhon Dane",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
-  });
+  const { users, setSelectedUser, getUsers, selectedUser } = useUserStore();
+
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
+
+  const handleClick = async (e, user) => {
+    e.preventDefault();
+    setSelectedUser(user);
+    console.log("Selected user in aside", selectedUser._id);
+  };
 
   return (
-    <div className="w-[320px] fixed left-0 top-0 bottom-0 bg-slate-800 border-r border-slate-700 flex flex-col">
+    <motion.div
+      initial={{ x: -50, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="xl:w-[320px] md:w-[250px] hidden fixed left-0 top-0 bottom-0 bg-gradient-to-b from-slate-900 to-slate-800 border-r border-slate-700 md:flex flex-col shadow-2xl"
+    >
+      {/* Header */}
       <div className="p-4 border-b border-slate-700">
-        <div className="flex items-center gap-3">
-          <motion.div whileHover={{ scale: 1.1 }}>
-            <ArrowLeftCircle
-              size={28}
-              className="text-slate-400 cursor-pointer"
-              onClick={() => navigate("/")}
-            />
+        <div className="flex items-center gap-4">
+          <motion.div
+            whileHover={{ scale: 1.2, rotate: 15 }}
+            className="cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <ArrowLeftCircle size={28} className="text-cyan-500" />
           </motion.div>
-          <h1 className="text-xl font-bold text-cyan-500">ChatRoom</h1>
+          <h1 className="text-2xl font-bold text-cyan-500">ChatRoom</h1>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 bg-slate-700 rounded-lg px-3 py-2">
-          <Search size={20} className="text-slate-400" />
+        {/* Search */}
+        <div className="mt-6 flex items-center gap-3 bg-slate-700 rounded-full px-4 py-2 shadow-inner transition-all duration-300 focus-within:shadow-lg">
+          <Search size={20} className="text-cyan-400" />
           <input
             type="text"
             placeholder="Search users..."
-            className="w-full bg-transparent outline-none text-slate-200 placeholder-slate-500"
+            className="w-full border-none bg-transparent outline-none text-cyan-200 placeholder-cyan-500"
           />
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-slate-400 text-sm">
+        {/* Improved Online Indicator */}
+        <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-green-500 rounded-full"></span>
-            <span>Online (9)</span>
+            <div className="relative">
+              <span className="absolute inline-flex h-3 w-3 rounded-full bg-green-500 opacity-75 animate-ping"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-500"></span>
+            </div>
+            <span className="text-cyan-200 font-medium">Online</span>
+          </div>
+          <div className="bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+            {users.length}
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2">
+      {/* User List */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
         {users.map((user, index) => (
           <motion.div
             key={index}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700 cursor-pointer transition-colors"
-            whileHover={{ x: 5 }}
+            whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition-colors shadow-md 
+              ${
+                selectedUser?._id === user._id
+                  ? "bg-slate-700 border-l-4 border-cyan-500"
+                  : "hover:bg-slate-700"
+              }`}
+            onClick={(e) => handleClick(e, user)}
           >
             <div className="avatar">
-              <div className="w-12 rounded-full">
-                <img src={user.image} alt={user.name} />
+              <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-cyan-500">
+                <img
+                  src={user?.avatar}
+                  alt={user?.username}
+                  className="object-cover w-full h-full"
+                />
               </div>
             </div>
             <div>
-              <p className="text-slate-200 font-medium">{user.name}</p>
-              <p className="text-xs text-slate-400">Last active 2h ago</p>
+              <p className="text-cyan-200 font-semibold">{user?.username}</p>
+              <p className="text-xs text-cyan-400">Last active 2h ago</p>
             </div>
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

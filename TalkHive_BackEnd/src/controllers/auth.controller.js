@@ -89,14 +89,6 @@ const login = AsyncHandler(async (req, res) => {
   });
   return res.status(200).json(new ApiResponse(200, "User logged in", user));
 });
-const logout = AsyncHandler(async (req, res) => {
-  const user = await User.findById(req.user);
-  if (!user) {
-    throw new ApiError(400, "User does not exist");
-  }
-  res.clearCookie("token");
-  return res.status(200).json(new ApiResponse(200, "User logged out"));
-});
 
 const checkUser = AsyncHandler(async (req, res) => {
   const user = await User.findById(req.user);
@@ -107,11 +99,20 @@ const checkUser = AsyncHandler(async (req, res) => {
     success: true,
     message: "User found",
     userInfo: {
+      userId: user._id,
       username: user.username,
       email: user.email,
       avatar: user.avatar,
     },
   });
+});
+const logout = AsyncHandler(async (req, res) => {
+  const user = await User.findById(req.user);
+  if (!user) {
+    throw new ApiError(400, "User does not exist");
+  }
+  res.clearCookie("token");
+  return res.status(200).json(new ApiResponse(200, "User logged out"));
 });
 
 const updateAvatar = AsyncHandler(async (req, res) => {

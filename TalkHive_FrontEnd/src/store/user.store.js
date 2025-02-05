@@ -2,6 +2,8 @@ import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+const url_loacl = "http://localhost:5050";
+
 const useUserStore = create((set) => {
   return {
     authUser: null,
@@ -9,16 +11,24 @@ const useUserStore = create((set) => {
     isLoggingIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
-    setUser: (user) => set({ user }),
+    users: [],
+    selectedUser: null,
+    setSelectedUser: (selectedUser) => set({ selectedUser }),
     checkAuth: async () => {
       try {
         const res = await axios.get(
-          "https://talk-hive-backend.vercel.app//api/v1/user/check-user"
+          "http://localhost:5050/api/v1/user/check-user",
+          {
+            withCredentials: true,
+          }
         );
-        console.log("🚀 :", res);
+        console.log("Checking Auth", res.data.userInfo);
         set({ authUser: res.data.userInfo });
       } catch (error) {
-        console.log("errrrr", error.message);
+        console.error(
+          "Error checking auth:",
+          error.response?.data || error.message
+        );
         set({ authUser: null });
       } finally {
         set({ isCheckingAuth: false });
@@ -30,10 +40,13 @@ const useUserStore = create((set) => {
         //set a promise for 1 sec delay
 
         const res = await axios.post(
-          "https://talk-hive-backend.vercel.app//api/v1/user/login",
+          "http://localhost:5050/api/v1/user/login",
           {
             username,
             password,
+          },
+          {
+            withCredentials: true,
           }
         );
         toast.success("Login successful");
@@ -53,12 +66,13 @@ const useUserStore = create((set) => {
       try {
         set({ isSigninUp: true });
         const res = await axios.post(
-          "https://talk-hive-backend.vercel.app/api/v1/user/signup",
+          "http://localhost:5050/api/v1/user/signup",
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
             },
+            withCredentials: true,
           }
         );
         toast.success("Signup successful");
@@ -75,15 +89,34 @@ const useUserStore = create((set) => {
     logout: async () => {
       try {
         console.log("logging out");
-        const res = await axios.get(
-          "https://talk-hive-backend.vercel.app//api/v1/user/logout"
-        );
+        const res = await axios.get(`${url_loacl}/api/v1/user/logout`, {
+          withCredentials: true,
+        });
         console.log(res);
         toast.success("Logout successful");
         set({ authUser: null });
       } catch (error) {
         console.log(error);
         toast.error(error.response.statusText);
+      }
+    },
+    getUsers: async () => {
+      try {
+        set({ isUserLoading: true });
+        const res = await axios.get(
+          "http://localhost:5050/api/v1/chat/get-users",
+          {
+            withCredentials: true,
+          }
+        );
+        console.log("Users available", res.data);
+        // console.log(res.data);
+        set({ users: res.data });
+      } catch (error) {
+        console.log(error);
+        // toast.error("error getting users");
+      } finally {
+        set({ isUserLoading: false });
       }
     },
   };

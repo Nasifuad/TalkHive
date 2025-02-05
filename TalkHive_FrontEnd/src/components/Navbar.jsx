@@ -9,9 +9,11 @@ const Navbar = () => {
 
   const navigate = useNavigate();
   const { authUser, logout } = useUserStore();
-  console.log(authUser);
-  const [userName] = useState(authUser?.data?.data?.username || "Guest");
-  const [avatar] = useState(authUser?.data?.data?.avatar || img);
+  // console.log("Current User", authUser);
+  // const [userName] = useState(authUser?.username || "Guest");
+  // const [avatar] = useState(authUser?.avatar || img);
+  const userName = authUser?.username || "Guest";
+  const avatar = authUser?.avatar || img;
   const [menuOpen, setMenuOpen] = useState(false);
   const menuItems = [
     {

@@ -14,7 +14,7 @@ const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const { checkAuth } = useUserStore();
   const handleFileChange = (event) => {
     if (event.target.files.length > 0) {
       setFileSelected(true);
@@ -42,6 +42,7 @@ const SignUpPage = () => {
 
     const res = await checkSignup(formData);
     if (res) {
+      checkAuth();
       navigate("/");
     }
   };
