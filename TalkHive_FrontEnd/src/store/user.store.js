@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const url_loacl = "http://localhost:5050";
+const url_loacl = "https://talk-hive-backend.vercel.app";
 
 const useUserStore = create((set) => {
   return {
@@ -66,7 +66,7 @@ const useUserStore = create((set) => {
       try {
         set({ isSigninUp: true });
         const res = await axios.post(
-          "http://localhost:5050/api/v1/user/signup",
+          "https://talk-hive-backend.vercel.app/api/v1/user/signup",
           formData,
           {
             headers: {
@@ -104,7 +104,7 @@ const useUserStore = create((set) => {
       try {
         set({ isUserLoading: true });
         const res = await axios.get(
-          "http://localhost:5050/api/v1/chat/get-users",
+          "https://talk-hive-backend.vercel.app/api/v1/chat/get-users",
           {
             withCredentials: true,
           }

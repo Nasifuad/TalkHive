@@ -79,7 +79,7 @@ const useChatStore = create((set) => ({
     try {
       set({ isMessageLoading: true });
       const res = await axios.get(
-        `http://localhost:5050/api/v1/chat/get-messages/${senderId}`,
+        `https://talk-hive-backend.vercel.app/api/v1/chat/get-messages/${senderId}`,
         { withCredentials: true }
       );
       // Assuming res.data is either an array or an object
@@ -98,7 +98,7 @@ const useChatStore = create((set) => ({
   sendMessages: async (formData) => {
     try {
       const res = await axios.post(
-        "http://localhost:5050/api/v1/chat/send-messages",
+        "https://talk-hive-backend.vercel.app/api/v1/chat/send-messages",
         formData,
         {
           headers: {
