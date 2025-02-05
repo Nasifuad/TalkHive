@@ -12,6 +12,7 @@ import LoginPage from "../pages/LoginPage";
 import SignUpPage from "../pages/SignupPage";
 import ErrorPage from "../pages/ErrorPage";
 import ChatRoom from "../pages/ChatRoom";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
         <Route path="contact" element={<ContactPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignUpPage />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
       <Route path="/chat-room" element={<ChatRoom />}></Route>

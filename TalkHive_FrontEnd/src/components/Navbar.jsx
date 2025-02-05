@@ -37,11 +37,10 @@ const Navbar = () => {
     logout();
     navigate("/login");
   };
-
   return (
     <div className="md:container relative w-full mx-auto h-18 ">
       <motion.nav
-        className="container flex items-center justify-between p-4 border-b border-magenta-400 bg-black bg-opacity-95 fixed top-0 z-50"
+        className="container flex items-center justify-between p-4 border-b border-magenta-400 bg-black  fixed top-0 z-50"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 200 }}
@@ -88,13 +87,18 @@ const Navbar = () => {
         {/* If any user is logged in then show logout or else show login and signup */}
         {authUser ? (
           <div className="flex items-center gap-2 ml-2">
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-2"
+              onClick={() => navigate("profile")}
+            >
               <div className="avatar online">
-                <div className="w-12 xl:w-16 rounded-full">
-                  <img src={avatar} />
+                <div className="w-12 xl:w-16 rounded-full ">
+                  <img src={avatar} className=" cursor-pointer" />
                 </div>
               </div>
-              <p className="text-cyan-300 text-sm text-nowrap">{userName}</p>
+              <p className="text-cyan-300 text-lg capitalize font-light text-nowrap underline underline-offset-2">
+                {userName}
+              </p>
             </div>
 
             <motion.button

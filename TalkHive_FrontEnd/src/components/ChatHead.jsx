@@ -6,27 +6,25 @@ const ChatHead = () => {
   const { authUser, selectedUser } = useUserStore();
   return (
     <motion.div
-      className="fixed top-0 right-0 left-0 md:left-[300px] xl:left-[320px] bg-slate-800 p-4 border-b border-slate-700 flex items-center gap-4 z-10"
+      className=" md:left-[300px] xl:left-[320px] bg-slate-800 p-4 border-b border-slate-700 flex items-center gap-4 z-10"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
     >
-      <div className="avatar">
-        <div className="w-12 rounded-full">
+      <div className="flex xl:justify-between justify-between pl-20 md:pl-0 flex-1 items-center">
+        <div className="flex flex-col justify-center items-center">
           <img
-            src={
-              selectedUser?.avatar ||
-              "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-            }
+            src={selectedUser?.avatar}
+            alt=""
+            className="w-15 h-15 rounded-full"
           />
-        </div>
-      </div>
-      <div className="flex justify-between flex-1 items-center">
-        <div>
-          <h2 className="text-slate-200 font-bold">
+          <h2 className="text-slate-200 capitalize font-bold">
             {selectedUser?.username || "ChatRoom"}
           </h2>
           <p className="text-sm text-slate-400">Online</p>
         </div>
+        <h1 className="md:hidden text-4xl  text-cyan-500 font-mono font-bold ">
+          Retro-Chat
+        </h1>
         <div className="flex items-center gap-2 flex-col">
           <img
             src={

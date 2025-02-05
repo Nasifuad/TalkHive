@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
+import useUserStore from "../store/user.store";
 
 const RetroChatHomePage = () => {
   const title = "Welcome to TalkHive".split(" ");
@@ -13,6 +14,7 @@ const RetroChatHomePage = () => {
     hidden: { opacity: 0, scale: 0 },
     visible: { opacity: 0.3, scale: 1 },
   };
+  const { authUser } = useUserStore();
 
   return (
     <>
@@ -83,7 +85,10 @@ const RetroChatHomePage = () => {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            <NavLink className="relative z-10" to="chat-room">
+            <NavLink
+              className="relative z-10"
+              to={authUser ? "chat-room" : "login"}
+            >
               START SESSION
             </NavLink>
             <div className="absolute inset-0 bg-green-400 opacity-0 group-hover:opacity-10 transition-opacity" />
