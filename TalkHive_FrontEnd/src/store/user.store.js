@@ -17,7 +17,7 @@ const useUserStore = create((set) => {
     checkAuth: async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5050/api/v1/user/check-user",
+          "https://talk-hive-backend.vercel.app/api/v1/user/check-user",
           {
             withCredentials: true,
           }
@@ -40,7 +40,7 @@ const useUserStore = create((set) => {
         //set a promise for 1 sec delay
 
         const res = await axios.post(
-          "http://localhost:5050/api/v1/user/login",
+          "https://talk-hive-backend.vercel.app/api/v1/user/login",
           {
             username,
             password,
