@@ -28,7 +28,7 @@ const Footer = () => {
         {/* Logo Section */}
         <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
           <h2 className="text-2xl font-bold text-green-400 mb-4">RetroChat</h2>
-          <p className="mb-4">Est. 2023</p>
+          <p className="mb-4">Est. 2025</p>
           <div className="flex gap-4">
             <motion.a
               href="#"

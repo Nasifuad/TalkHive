@@ -15,7 +15,7 @@ const LoginPage = () => {
   const { isLoggingIn, checkLogin, checkAuth } = useUserStore();
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("This this working");
+    console.log("This this working", username, password);
     if (username.length == 0 && password.length == 0) {
       toast.error("Please fill all the fields");
       return;

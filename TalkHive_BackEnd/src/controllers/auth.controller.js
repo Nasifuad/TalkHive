@@ -39,9 +39,9 @@ const register = AsyncHandler(async (req, res) => {
     }
 
     const avatarLocalPath = req.file.buffer;
-    console.log(avatarLocalPath);
+    // console.log(avatarLocalPath);
     const avatarFile = await uploadToCloudinary(avatarLocalPath);
-    console.log("avatarFile", avatarFile);
+    // console.log("avatarFile", avatarFile);
     const user = await User.create({
       username,
       email,
@@ -73,13 +73,11 @@ const login = AsyncHandler(async (req, res) => {
     $or: [{ email }, { username }],
   });
   if (!user) {
-    // throw new ApiError(400, "User does not exist");
     res.status(400).json({ success: false, message: "Invalid Credintials" });
   }
   const isMatch = await user.checkPassword(password.toString());
   console.log("isMatch", isMatch);
   if (!isMatch) {
-    // throw new ApiError(400, "Incorrect password");
     res.status(400).json({ success: false, message: "Invalid Credintials" });
   }
   const token = generateAccessToken(user._id);
@@ -97,6 +95,7 @@ const checkUser = AsyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(400, "User does not exist");
   }
+  // console.log("Server working fine");
   return res.status(200).json({
     success: true,
     message: "User found",

@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
+// const url_local = "https://talk-hive-backend.vercel.app/";
+const url_local = "https://talk-hive-backend.vercel.app/";
 
-const url_loacl = "https://talk-hive-backend.vercel.app";
-
-const useUserStore = create((set) => {
+const useUserStore = create((set, get) => {
   return {
     authUser: null,
     isSigninUp: false,
@@ -12,18 +13,18 @@ const useUserStore = create((set) => {
     isUpdatingProfile: false,
     isCheckingAuth: true,
     users: [],
+    socket: null,
+    onlineUsers: [],
     selectedUser: null,
     setSelectedUser: (selectedUser) => set({ selectedUser }),
     checkAuth: async () => {
       try {
-        const res = await axios.get(
-          "https://talk-hive-backend.vercel.app/api/v1/user/check-user",
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axios.get(`${url_local}api/v1/user/check-user`, {
+          withCredentials: true,
+        });
         console.log("Checking Auth", res.data.userInfo);
         set({ authUser: res.data.userInfo });
+        get().connectSocket();
       } catch (error) {
         console.error(
           "Error checking auth:",
@@ -37,10 +38,9 @@ const useUserStore = create((set) => {
     checkLogin: async (username, password) => {
       try {
         set({ isLoggingIn: true });
-        //set a promise for 1 sec delay
-
+        console.log("Login information", username, password);
         const res = await axios.post(
-          "https://talk-hive-backend.vercel.app/api/v1/user/login",
+          "http://localhost:5050/api/v1/user/login",
           {
             username,
             password,
@@ -50,6 +50,7 @@ const useUserStore = create((set) => {
           }
         );
         toast.success("Login successful");
+        get().connectSocket();
         set({ authUser: res.data });
         return true;
       } catch (error) {
@@ -66,7 +67,7 @@ const useUserStore = create((set) => {
       try {
         set({ isSigninUp: true });
         const res = await axios.post(
-          "https://talk-hive-backend.vercel.app/api/v1/user/signup",
+          `${url_local}api/v1/user/signup`,
           formData,
           {
             headers: {
@@ -89,11 +90,13 @@ const useUserStore = create((set) => {
     logout: async () => {
       try {
         console.log("logging out");
-        const res = await axios.get(`${url_loacl}/api/v1/user/logout`, {
+        const res = await axios.get(`${url_local}api/v1/user/logout`, {
           withCredentials: true,
         });
+        get;
         console.log(res);
         toast.success("Logout successful");
+        get().disconnectSocket();
         set({ authUser: null });
       } catch (error) {
         console.log(error);
@@ -103,21 +106,83 @@ const useUserStore = create((set) => {
     getUsers: async () => {
       try {
         set({ isUserLoading: true });
-        const res = await axios.get(
-          "https://talk-hive-backend.vercel.app/api/v1/chat/get-users",
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("Users available", res.data);
-        // console.log(res.data);
+        const res = await axios.get(`${url_local}api/v1/chat/get-users`, {
+          withCredentials: true,
+        });
         set({ users: res.data });
       } catch (error) {
         console.log(error);
-        // toast.error("error getting users");
       } finally {
         set({ isUserLoading: false });
       }
+    },
+    // connectSocket: async () => {
+    //   const { authUser } = get();
+    //   if (!authUser || get().socket?.connected) return;
+
+    //   console.log("Connecting socket...");
+
+    //   const socket = io("http://localhost:5050", {
+    //     // Use the full URL
+    //     query: {
+    //       userId: authUser.userId, // Make sure authUser.userId is correct!
+    //     },
+    //   });
+
+    //   socket.on("connect", () => {
+    //     // Listen for the 'connect' event
+    //     console.log("Socket connected!");
+    //     socket.emit("userConnected"); // Emit "userConnected" *after* connection
+    //   });
+
+    //   socket.on("connect_error", (err) => {
+    //     console.error("Socket connection error:", err);
+    //     toast.error("Failed to connect to chat server.");
+    //   });
+
+    //   socket.on("disconnect", () => {
+    //     console.log("Socket disconnected.");
+    //     set({ onlineUsers: [] });
+    //     socket.emit("userDisconnected");
+    //   });
+
+    //   socket.on("getOnlineUsers", (userIds) => {
+    //     console.log("Online users:", userIds);
+    //     set({ onlineUsers: userIds });
+    //   });
+
+    //   socket.on("reconnect", () => {
+    //     console.log("Reconnected to server");
+    //   });
+
+    //   set({ socket }); // Set the socket *after* attaching listeners
+    // },
+    // disconnectSocket: () => {
+    //   const socket = get().socket;
+    //   if (socket) {
+    //     socket.disconnect();
+    //     set({ socket: null, onlineUsers: [] }); // Clear state on disconnect
+    //   }
+    // },
+    connectSocket: () => {
+      const { authUser } = get();
+      if (!authUser || get().socket?.connected) return;
+
+      const socket = io("http://localhost:5050", {
+        query: {
+          userId: authUser.userId,
+        },
+      });
+      socket.connect();
+
+      set({ socket: socket });
+
+      socket.on("getOnlineUsers", (userIds) => {
+        set({ onlineUsers: userIds });
+      });
+    },
+    disconnectSocket: () => {
+      if (get().socket?.connected) get().socket.disconnect();
     },
   };
 });

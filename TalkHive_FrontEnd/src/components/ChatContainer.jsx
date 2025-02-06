@@ -1,171 +1,120 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import useUserStore from "../store/user.store";
 import useChatStore from "../store/chat.store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 import { formatMessageTime } from "../util.js/time";
+import { Send } from "lucide-react";
+
 const ChatContainer = () => {
   const { selectedUser, authUser } = useUserStore();
-  const { getMessages, messages } = useChatStore();
-  const [toggle, setToggle] = useState(false);
+  const { getMessages, messages, subscribeToMessages, unSubscribeToMessages } =
+    useChatStore();
+  const messageContainerRef = useRef(null); // Ref for the message container
+
   useEffect(() => {
-    // Only fetch messages when a user is selected
     if (selectedUser?._id) {
       getMessages(selectedUser._id);
+      subscribeToMessages();
+      return () => unSubscribeToMessages();
     }
-  }, [selectedUser?._id, getMessages]);
-  console.log("The Messages", messages);
+  }, [
+    selectedUser?._id,
+    getMessages,
+    subscribeToMessages,
+    unSubscribeToMessages,
+  ]);
+
+  // Function to scroll the chat container to the bottom
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  };
+
+  // Scroll to bottom when messages change or user selects a chat
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [messages, selectedUser?._id]); // Trigger when messages or selectedUser changes
 
   return (
-    <motion.div
-      className="flex-1 overflow-y-auto p-4 pb-20 "
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+    <div
+      className="flex-1 overflow-y-auto p-4 pb-20 relative"
+      ref={messageContainerRef}
     >
-      <div className="space-y-4 mt-10">
-        {messages
-          .sort((b, a) => new Date(b.updatedAt) - new Date(a.updatedAt)) // Sort in descending order
-          .map((data, i) => (
-            <div key={i}>
-              {data.senderId === selectedUser._id ? (
-                //if the sender is the one I am chatting with
-                <div className="chat chat-start">
-                  <div className="flex justify-center items-center avatar">
-                    <div className="w-10 rounded-full">
-                      <img
-                        alt="User avatar"
-                        src={
-                          selectedUser?.avatar ||
-                          "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="chat-header text-lg text-blue-500 capitalize">
-                    <p>{selectedUser?.username || "Obi-Wan Kenobi"}</p>
-                  </div>
-                  <div className="chat-bubble bg-slate-600">
-                    <div className="flex flex-col gap-2">
-                      {data?.text || "server"}
-                      {data?.image && (
-                        <img src={data.image} alt="Message" className="w-3/4" />
-                      )}
-                      <time className="text-xs opacity-50">
-                        {formatMessageTime(data?.updatedAt)}
-                      </time>
-                    </div>
-                  </div>
-                  <div className="chat-footer opacity-50">Delivered</div>
-                </div>
-              ) : (
-                // if the sender is Me
-                <div className="chat chat-end">
-                  <div className="flex justify-center items-center avatar">
-                    <div className="w-10 rounded-full">
-                      <img
-                        alt="User avatar"
-                        src={
-                          authUser?.avatar ||
-                          "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="chat-header text-lg text-blue-500 capitalize">
-                    <p>{authUser?.username || "Obi-Wan Kenobi"}</p>
-                  </div>
-                  <div className="chat-bubble bg-slate-600">
-                    <div className="flex flex-col gap-2">
-                      {data?.text || "server"}
+      {selectedUser ? (
+        <div className="mt-10 space-y-4">
+          <AnimatePresence mode="popLayout">
+            {messages
+              .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt))
+              .map((data, index) => {
+                const isUserMessage = data.senderId === selectedUser._id;
+                return (
+                  <motion.div
+                    key={data._id}
+                    initial={{ opacity: 0, x: isUserMessage ? 50 : -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 120, damping: 15 }}
+                    className={`flex ${
+                      isUserMessage ? "justify-start" : "justify-end"
+                    } items-start gap-3`}
+                  >
+                    {isUserMessage && (
+                      <div className="relative w-10 h-10">
+                        <img
+                          alt="User avatar"
+                          src={selectedUser?.avatar}
+                          className="w-10 h-10 rounded-full object-cover relative z-10 border-2 border-white/20"
+                        />
+                      </div>
+                    )}
+                    <div
+                      className={`p-4 rounded-2xl max-w-[70%] ${
+                        isUserMessage
+                          ? "bg-white/10 text-white"
+                          : "bg-gradient-to-br from-cyan-500 to-blue-500"
+                      }`}
+                    >
+                      {data?.text && <p className="text-lg">{data.text}</p>}
                       {data?.image && (
                         <img
                           src={data.image}
                           alt="Message"
-                          onClick={() => setToggle(!toggle)}
-                          className="xl:w-[400px]"
+                          className="rounded-xl"
                         />
                       )}
-
-                      <time className="text-xs opacity-50">
-                        {formatMessageTime(data?.updatedAt)}
-                      </time>
+                      <div className="flex items-center justify-end">
+                        <time className="text-xs opacity-70">
+                          {formatMessageTime(data?.updatedAt)}
+                        </time>
+                      </div>
                     </div>
-                  </div>
-                  <div className="chat-footer opacity-50">Delivered</div>
-                </div>
-              )}
-            </div>
-          ))}
-      </div>
-    </motion.div>
+                  </motion.div>
+                );
+              })}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-2xl text-gray-500">
+            Select a user to start chatting
+          </p>
+        </div>
+      )}
+
+      {/* Button to scroll manually to the bottom */}
+      {messages.length > 0 && (
+        <motion.button
+          onClick={scrollToBottom}
+          className="fixed bottom-8 right-8 rounded-full p-4 bg-blue-500 shadow-xl"
+          whileHover={{ scale: 1.1, rotate: 10 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <Send className="w-6 h-6 text-white" />
+        </motion.button>
+      )}
+    </div>
   );
 };
 
 export default ChatContainer;
-// import { motion } from "framer-motion";
-// import useUserStore from "../store/user.store";
-// import useChatStore from "../store/chat.store";
-// import { useEffect, useState } from "react";
-// const ChatContainer = () => {
-//   // eslint-disable-next-line no-unused-vars
-//   const { authUser, selectedUser } = useUserStore();
-//   const { getMessages, messages } = useChatStore();
-//   const [datas, setDatas] = useState([]);
-//   const getData = async () => {
-//     const data = await getMessages(selectedUser?._id);
-//     console.log("Messages in get Data", data);
-//     setDatas(data);
-//     console.log("The f", data);
-//   };
-
-//   useEffect(() => {
-//     console.log("chat container", selectedUser);
-//     getMessages(selectedUser?._id);
-//     getData();
-//   }, [selectedUser?._id, getMessages]);
-//   return (
-//     <motion.div
-//       className="flex-1 overflow-y-auto p-4 pb-20 mt-16"
-//       initial={{ opacity: 0 }}
-//       animate={{ opacity: 1 }}
-//     >
-//       {/* Chat messages will go here */}
-//       <div className="space-y-4 mt-10">
-//         {datas &&
-//           datas?.map((data, i) => (
-//             <div key={i}>
-//               <div className="chat chat-start">
-//                 <div className="flex justify-center items-center flex-start avatar">
-//                   <div className="w-10 rounded-full">
-//                     <img
-//                       alt="Tailwind CSS chat bubble component"
-//                       src={
-//                         data?.image ||
-//                         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-//                       }
-//                     />
-//                   </div>
-//                 </div>
-//                 <div className="chat-header text-lg text-blue-500 capitalize justify-center items-center">
-//                   <p> {selectedUser?.username || "Obi-Wan Kenobi"}</p>
-//                 </div>
-//                 <div className="chat-bubble bg-slate-600">
-//                   <div className="flex flex-col gap-2">
-//                     {data?.text || "server"}
-//                     <img src={data?.image} alt="" width={150} />
-//                     <time className="text-xs opacity-50">12:45</time>
-//                   </div>
-//                 </div>
-
-//                 <div className="chat-footer opacity-50">Delivered</div>
-//               </div>
-//               {/* <p>{data?.text || "server"}</p>
-//                */}
-//             </div>
-//           ))}
-//       </div>
-//     </motion.div>
-//   );
-// };
-
-// export default ChatContainer;
-// ChatContainer.jsx

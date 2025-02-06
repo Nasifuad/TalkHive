@@ -1,45 +1,55 @@
+// MessageInput.jsx (completed)
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Image, Send, X } from "lucide-react";
-import { useRef, useState } from "react";
 import useChatStore from "../store/chat.store";
 import useUserStore from "../store/user.store";
 
 const MessageInput = () => {
   const [message, setMessage] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [avatar, setAvatar] = useState(null);
+  const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const { selectedUser } = useUserStore();
   const { sendMessages } = useChatStore();
 
-  // Handle file selection and preview the image using URL.createObjectURL
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      setAvatar(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreviewUrl(URL.createObjectURL(selectedFile));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Message:", message);
-    console.log("Selected file preview URL:", previewUrl);
-    console.log("Selected User in chat container", selectedUser);
+
+    if (!selectedUser) return;
+
     const formData = new FormData();
     formData.append("receiverId", selectedUser._id);
     formData.append("text", message);
-    setMessage("");
-    setPreviewUrl("");
-    if (avatar) formData.append("image", avatar);
-    sendMessages(formData);
+    if (file) {
+      formData.append("image", file);
+    }
+
+    try {
+      await sendMessages(formData);
+      setMessage("");
+      setPreviewUrl(null);
+      setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      // Handle error (e.g., display a toast message)
+    }
   };
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 right-0 xl:left-[320px] bg-slate-800 p-4 border-t border-slate-700"
+      className="fixed bottom-0 left-0 right-0 xl:left-[320px] bg-[#161522] p-4 border-t border-[#282737]"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
     >
@@ -49,7 +59,7 @@ const MessageInput = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 bg-slate-700 rounded-lg px-4 py-3 text-slate-200 outline-none focus:ring-2 focus:ring-cyan-500"
+          className="ml-auto w-full xl:w-full md:w-1/2 bg-[#282737] rounded-lg px-4 py-3 text-gray-300 outline-none focus:ring-2 focus:ring-[#6750a4] border border-[#282737]"
         />
         <input
           type="file"
@@ -61,7 +71,7 @@ const MessageInput = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="p-3 bg-cyan-600 rounded-lg text-white"
+          className="p-3 bg-[#6750a4] rounded-lg text-white"
           onClick={() => fileInputRef.current.click()}
         >
           <Image size={20} />
@@ -69,25 +79,30 @@ const MessageInput = () => {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="p-3 bg-cyan-600 rounded-lg text-white"
+          className="p-3 bg-[#6750a4] rounded-lg text-white"
           onClick={handleSubmit}
         >
           <Send size={20} />
         </motion.button>
       </div>
 
-      {/* Preview Selected Image */}
       {previewUrl && (
-        <div className=" absolute -top-40 xl:right-30 ">
+        <div className="absolute -top-40 right-40 z-50">
           <img
             src={previewUrl}
             alt="Preview"
-            className="  max-h-40 object-contain rounded-lg border border-slate-600"
+            className="max-h-40 rounded-lg border border-[#282737]"
           />
           <X
             size={20}
-            className="absolute top-1 right-2 text-slate-200 bg-slate-500 rounded-full cursor-pointer"
-            onClick={() => setPreviewUrl(null)}
+            className="absolute top-1 right-2 text-gray-300 bg-[#282737] rounded-full cursor-pointer hover:bg-gray-400"
+            onClick={() => {
+              setPreviewUrl(null);
+              setFile(null); // Clear the file state when closing preview
+              if (fileInputRef.current) {
+                fileInputRef.current.value = ""; // Clear the input
+              }
+            }}
           />
         </div>
       )}

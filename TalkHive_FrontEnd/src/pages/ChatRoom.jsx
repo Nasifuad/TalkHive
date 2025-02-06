@@ -6,7 +6,9 @@ import ChatContainer from "../components/ChatContainer";
 
 const ChatRoom = () => {
   return (
-    <div className="relative bg-slate-800 h-screen flex">
+    <div className="relative b h-screen flex overflow-hidden">
+      {" "}
+      {/* Retro background gradient */}
       <Aside />
       <div className="flex-1 flex flex-col md:ml-[320px]">
         <ChatHead />
