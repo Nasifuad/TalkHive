@@ -189,11 +189,9 @@ const useUserStore = create((set, get) => {
       console.log("Connecting socket...");
 
       const socket = io("https://talk-hive-backend.vercel.app", {
-        transports: ["websocket", "polling"], // Ensure fallback to polling if needed
+        transports: ["websocket", "polling"], // Ensure both options
         withCredentials: true,
-        query: {
-          userId: authUser.userId,
-        },
+        query: { userId: authUser.userId },
       });
 
       socket.on("connect", () => {
