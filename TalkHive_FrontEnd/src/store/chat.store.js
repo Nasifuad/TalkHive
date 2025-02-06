@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import useUserStore from "./user.store";
 
-const url_loacl = "http://localhost:5050/";
+const url_loacl = "https://talk-hive-backend.vercel.app/";
 const useChatStore = create((set, get) => ({
   messages: [],
   selectedUser: null,

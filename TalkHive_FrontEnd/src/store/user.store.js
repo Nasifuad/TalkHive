@@ -40,7 +40,7 @@ const useUserStore = create((set, get) => {
         set({ isLoggingIn: true });
         console.log("Login information", username, password);
         const res = await axios.post(
-          "http://localhost:5050/api/v1/user/login",
+          `${url_local}api/v1/user/login`,
           {
             username,
             password,
@@ -168,7 +168,7 @@ const useUserStore = create((set, get) => {
       const { authUser } = get();
       if (!authUser || get().socket?.connected) return;
 
-      const socket = io("http://localhost:5050", {
+      const socket = io("https://talk-hive-backend.vercel.app", {
         query: {
           userId: authUser.userId,
         },
