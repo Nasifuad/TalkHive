@@ -16,8 +16,8 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 export const server = http.createServer(app);
 export const io = new Server(server, {

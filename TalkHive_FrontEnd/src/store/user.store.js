@@ -169,6 +169,7 @@ const useUserStore = create((set, get) => {
       if (!authUser || get().socket?.connected) return;
 
       const socket = io("https://talk-hive-backend.vercel.app", {
+        withCredentials: true,
         query: {
           userId: authUser.userId,
         },
