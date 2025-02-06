@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 export const server = http.createServer(app);
 export const io = new Server(server, {
   cors: {
-    origin: "https://talk-hive-live.vercel.app", // Your frontend URL
+    origin: "https://talk-hive-live.vercel.app",
     credentials: true,
     methods: ["GET", "POST"],
   },
@@ -34,42 +34,6 @@ export function getReceiverId(userId) {
   return userSocketMap[userId];
 }
 
-// io.on("connection", (socket) => {
-//   const userId = socket.handshake.query.userId;
-//   console.log("User connected:", userId, socket.id);
-
-//   // socket.on("userConnected", () => {
-//   //   if (userId) {
-//   //     userSocketMap[userId] = socket.id;
-//   //     console.log("userSocketMap on connect", userSocketMap);
-//   //     io.emit("getOnlineUsers", Object.keys(userSocketMap));
-//   //   }
-//   // });
-//   if (userId) userSocketMap[userId] = socket.id;
-//   io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
-//   socket.on("disconnect", () => {
-//     console.log("A user disconnected", socket.id);
-//     delete userSocketMap[userId];
-//     io.emit("getOnlineUsers", Object.keys(userSocketMap));
-//   });
-//   // socket.on("disconnect", () => {
-//   //   console.log("User disconnected:", userId, socket.id);
-//   //   let userIdToRemove;
-//   //   for (const uid in userSocketMap) {
-//   //     if (userSocketMap[uid] === socket.id) {
-//   //       userIdToRemove = uid;
-//   //       break;
-//   //     }
-//   //   }
-
-//   //   if (userIdToRemove) {
-//   //     delete userSocketMap[userIdToRemove];
-//   //     console.log("userSocketMap on disconnect", userSocketMap);
-//   //     io.emit("getOnlineUsers", Object.keys(userSocketMap));
-//   //   }
-//   // });
-// });
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   console.log("User connected:", userId, socket.id);

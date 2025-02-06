@@ -164,24 +164,50 @@ const useUserStore = create((set, get) => {
     //     set({ socket: null, onlineUsers: [] }); // Clear state on disconnect
     //   }
     // },
+    // connectSocket: () => {
+    //   const { authUser } = get();
+    //   if (!authUser || get().socket?.connected) return;
+
+    //   const socket = io("https://talk-hive-backend.vercel.app", {
+    //     withCredentials: true,
+    //     query: {
+    //       userId: authUser.userId,
+    //     },
+    //   });
+    //   socket.connect();
+
+    //   set({ socket: socket });
+
+    //   socket.on("getOnlineUsers", (userIds) => {
+    //     set({ onlineUsers: userIds });
+    //   });
+    // },
     connectSocket: () => {
       const { authUser } = get();
       if (!authUser || get().socket?.connected) return;
 
+      console.log("Connecting socket...");
+
       const socket = io("https://talk-hive-backend.vercel.app", {
+        transports: ["websocket", "polling"], // Ensure fallback to polling if needed
         withCredentials: true,
         query: {
           userId: authUser.userId,
         },
       });
-      socket.connect();
 
-      set({ socket: socket });
-
-      socket.on("getOnlineUsers", (userIds) => {
-        set({ onlineUsers: userIds });
+      socket.on("connect", () => {
+        console.log("Socket connected successfully:", socket.id);
+        socket.emit("userConnected");
       });
+
+      socket.on("connect_error", (err) => {
+        console.error("Socket connection error:", err);
+      });
+
+      set({ socket });
     },
+
     disconnectSocket: () => {
       if (get().socket?.connected) get().socket.disconnect();
     },
