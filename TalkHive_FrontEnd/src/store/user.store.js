@@ -3,7 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 // const url_local = "https://talk-hive-backend.vercel.app/";
-const url_local = "https://talk-hive-backend.vercel.app/";
+const url_local = "https://talkhive-ymcy.onrender.com/";
 
 const useUserStore = create((set, get) => {
   return {
@@ -188,7 +188,7 @@ const useUserStore = create((set, get) => {
 
       console.log("Connecting socket...");
 
-      const socket = io("https://talk-hive-backend.vercel.app", {
+      const socket = io("https://talkhive-ymcy.onrender.com", {
         transports: ["websocket", "polling"], // Ensure both options
         withCredentials: true,
         query: { userId: authUser.userId },
