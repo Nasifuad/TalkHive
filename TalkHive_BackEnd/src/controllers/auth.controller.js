@@ -46,7 +46,7 @@ const register = AsyncHandler(async (req, res) => {
       username,
       email,
       password,
-      avatar: avatarFile.secure_url,
+      avatar: avatarFile.url,
     });
 
     if (user) {
@@ -103,7 +103,7 @@ const checkUser = AsyncHandler(async (req, res) => {
       userId: user._id,
       username: user.username,
       email: user.email,
-      // avatar: user.avatar,
+      avatar: user.avatar,
     },
   });
 });
