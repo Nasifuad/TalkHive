@@ -32,12 +32,12 @@ const MessageInput = () => {
     if (file) {
       formData.append("image", file);
     }
-
+    setMessage("");
+    setPreviewUrl(null);
+    setFile(null);
     try {
       await sendMessages(formData);
-      setMessage("");
-      setPreviewUrl(null);
-      setFile(null);
+
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
